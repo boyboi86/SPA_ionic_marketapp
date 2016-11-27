@@ -3,27 +3,81 @@
 <!--to reflect Company legal name-->
     <div class="buttons" side="left">
       <div class="button button-clear">
-        <h6>Company Name Inc.</h6>
+        <h6>{{stockDetailsData.Name}}</h6>
       </div>
     </div>
 <!--to reflect current prices-->
-    <h2 class="title button-left button-right">500</h2>
+    <h2 class="title button-left button-right">{{stockDetailsData.LastTradePriceOnly}}</h2>
 <!--to reflect changes to prices-->
     <div class="buttons" side="right">
       <div class="button button-clear">
-        <h6>+100.000000 %</h6>
+        <h6>{{stockDetailsData.ChangeinPercent}}</h6>
       </div>
     </div>
 
   </div>
   <ion-content class="has-subheader">
+
+  <div class="button-bar">
+    <a ng-click="chartViewFn(1)" ng-class="chartView == 1? 'active': ''" class="button">Day</a>
+    <a ng-click="chartViewFn(2)" ng-class="chartView == 2? 'active': ''" class="button">Week</a>
+    <a ng-click="chartViewFn(3)" ng-class="chartView == 3? 'active': ''" class="button">3m</a>
+    <a ng-click="chartViewFn(4)" ng-class="chartView == 4? 'active': ''" class="button">Year</a>
+    <a ng-click="chartViewFn(5)" ng-class="chartView == 5? 'active': ''" class="button">Max</a>
+  </div>
+
+  <!--Charts for ticker-->
+  <img ng-if="chartView == 1" ng-src="http://chart.finance.yahoo.com/z?s={{ticker}}&t=1d&q=l&l=on&z=m&a=vm" style="width:100%;">
+  <img ng-if="chartView == 2" ng-src="http://chart.finance.yahoo.com/z?s={{ticker}}&t=5d&q=l&l=on&z=m&a=vm" style="width:100%;">
+  <img ng-if="chartView == 3" ng-src="http://chart.finance.yahoo.com/z?s={{ticker}}&t=3m&q=l&l=on&z=m&a=vm" style="width:100%;">
+  <img ng-if="chartView == 4" ng-src="http://chart.finance.yahoo.com/z?s={{ticker}}&t=1y&q=l&l=on&z=m&a=vm" style="width:100%;">
+  <img ng-if="chartView == 5" ng-src="http://chart.finance.yahoo.com/z?s={{ticker}}&t=my&q=l&l=on&z=m&a=vm" style="width:100%;">
+
     <!--reflect market data-->
     <div class="card">
       <div class="item item-divider">Market Data</div>
       <div class="row row-center">
-        <div class="col">Data: </div>
-        <div class="col">10000.500</div>
+        <div class="col">Open: </div>
+        <div class="col">{{stockDetailsData.Open}}</div>
+        <div class="col">Prev Close: </div>
+        <div class="col">{{stockDetailsData.PreviousClose}}</div>
       </div>
+
+      <div class="row row-center">
+        <div class="col">Ask: </div>
+        <div class="col">{{stockDetailsData.Ask}}</div>
+        <div class="col">Bid: </div>
+        <div class="col">{{stockDetailsData.Bid}}</div>
+      </div>
+
+      <div class="row row-center">
+        <div class="col">Day high: </div>
+        <div class="col">{{stockDetailsData.DaysHigh}}</div>
+        <div class="col">Day low: </div>
+        <div class="col">{{stockDetailsData.DaysLow}}</div>
+      </div>
+
+      <div class="row row-center">
+        <div class="col">52w high: </div>
+        <div class="col">{{stockDetailsData.YearHigh}}</div>
+        <div class="col">52w low: </div>
+        <div class="col">{{stockDetailsData.YearLow}}</div>
+      </div>
+
+      <div class="row row-center">
+        <div class="col">Volume: </div>
+        <div class="col">{{stockDetailsData.Volume}}</div>
+        <div class="col">Ave Daily Vol: </div>
+        <div class="col">{{stockDetailsData.AverageDailyVolume}}</div>
+      </div>
+
+      <div class="row row-center">
+        <div class="col">Market Cap: </div>
+        <div class="col">{{stockDetailsData.MarketCapitalization}}</div>
+        <div class="col">EBITDA: </div>
+        <div class="col">{{stockDetailsData.EBITDA}}</div>
+      </div>
+
     </div>
 
     <div class="card">
