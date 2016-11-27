@@ -55,13 +55,30 @@ angular.module('newApp.controllers', [])
   ];
 }])
 
-.controller('StockCtrl', ['$scope','$stateParams', '$http', 'stockDataService', function($scope, $stateParams, $http, stockDataService) {
+.controller('StockCtrl', ['$scope','$stateParams', 'stockDataService', function($scope, $stateParams, stockDataService) {
 
-  // http://finance.yahoo.com/webservice/v1/symbols/YHOO/quote?bypass=true&format=json&view=detail
-  // $http.get("http://finance.yahoo.com/webservice/v1/symbols/YHOO/quote?bypass=true&format=json&view=detail")
-  //   .then(function(jsonData){
-  //     console.log(jsonData.data.list.resources[0].resource.fields);
-  //   });
 
   $scope.ticker = $stateParams.stockTicker;
+  /*Use lifecycle methods to invoke the function defined for services*/
+  $scope.$on("$ionicView.afterEnter", function(){
+    getPriceData();
+    getDetailsData();
+  });
+  /*This is a function invoked callback from services for ticker pricing*/
+  function getPriceData(){
+    var promise = stockDataService.getPriceData($scope.ticker);
+
+    promise.then(function(data){
+      console.log(data);
+    })
+  }
+
+  /*This is a function invoked callback from services for ticker details*/
+  function getDetailsData(){
+    var promise = stockDataService.getDetailsData($scope.ticker);
+
+    promise.then(function(data){
+      console.log(data);
+    })
+  }
 }]);
