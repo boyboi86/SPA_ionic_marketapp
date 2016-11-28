@@ -42,16 +42,10 @@ angular.module('newApp.controllers', [])
   };
 })
 
-.controller('MyStocksCtrl', ['$scope', function($scope) {
-  $scope.myStocksArray = [
-    {ticker: "AAPL"},
-    {ticker: "GPRO"},
-    {ticker: "FB"},
-    {ticker: "NFLX"},
-    {ticker: "TSLA"},
-    {ticker: "MSFT"},
-    {ticker: "GE"}
-  ];
+.controller('MyStocksCtrl', ['$scope',
+'myStocksArrayService',
+function($scope, myStocksArrayService) {
+  $scope.myStocksArray = myStocksArrayService;
 }])
 
 .controller('StockCtrl', ['$scope',
@@ -63,7 +57,17 @@ angular.module('newApp.controllers', [])
 'chartDataService',
 'notesService',
 'newsService',
-function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $window, chartDataService, notesService, newsService) {
+'followStockService',
+function($scope,
+  $stateParams,
+  $ionicPopup,
+  stockDataService,
+  dateService,
+  $window,
+  chartDataService,
+  notesService,
+  newsService,
+  followStockService) {
 
   $scope.chartView = 4;
   $scope.ticker = $stateParams.stockTicker;
@@ -79,10 +83,22 @@ function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $wind
 
   $scope.oneYearAgoDate = dateService.oneYearAgoDate();
   $scope.todayDate = dateService.currentDate();
+  $scope.following = followStockService.checkFollowing($scope.ticker);
 
   $scope.chartViewFn = function(n){
     $scope.chartView = n;
   }
+
+  $scope.toggleFollow = function() {
+  if($scope.following) {
+    followStockService.unfollow($scope.ticker);
+    $scope.following = false;
+  }
+  else {
+    followStockService.follow($scope.ticker);
+    $scope.following = true;
+  }
+};
 
   $scope.openWindow = function(link) {
     // var inAppBrowserOptions = {
