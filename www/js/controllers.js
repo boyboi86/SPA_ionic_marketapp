@@ -92,6 +92,13 @@ function($scope, $stateParams, stockDataService, dateService, $window, chartData
 
     promise.then(function(data){
       $scope.stockDetailsData  = data;
+
+      if(data.ChangeinPercent >= 0 && data !== null) {
+        $scope.reactiveColor = {'background-color': '#33cd5f', 'border-color': 'rgba(255,255,255,.3)'};
+      }
+      else if(data.ChangeinPercent < 0 && data !== null) {
+        $scope.reactiveColor = {'background-color' : '#ef473a', 'border-color': 'rgba(0,0,0,.2)'};
+      }
     })
   }
 
@@ -149,7 +156,7 @@ function($scope, $stateParams, stockDataService, dateService, $window, chartData
 	$scope.chartOptions = {
     chartType: 'linePlusBarWithFocusChart',
     data: 'myData',
-    margin: {top: 15, right: 40, bottom: marginBottom, left: 70},
+    margin: {top: 15, right: 0, bottom: marginBottom, left: 0},
     interpolate: "cardinal",
     useInteractiveGuideline: false,
     yShowMaxMin: false,
@@ -164,7 +171,10 @@ function($scope, $stateParams, stockDataService, dateService, $window, chartData
     y2AxisTickFormat: y2TickFormat,
     y3AxisTickFormat: y3TickFormat,
     y4AxisTickFormat: y4TickFormat,
-    transitionDuration: 500
+    transitionDuration: 500,
+    y1AxisLabel:'Price',
+    y3AxisLabel: 'Volume',
+    noData: 'Loading...'
 	};
 
 

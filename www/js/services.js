@@ -3,7 +3,6 @@ angular.module('newApp.services', [])
 .factory('encodeURIService', function() {
   return {
     encode: function(string){
-      console.log(string)
       return encodeURIComponent(string).replace(/\"/g, "%22").replace(/\ /g, "%20").replace(/[!'()]/g, escape);
     }
   }
@@ -38,8 +37,6 @@ var getDetailsData = function(ticker) {
   /*The below query is used for YQL only*/
   query = 'select * from yahoo.finance.quotes where symbol IN ("' + ticker + '")',
   url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIService.encode(query) + '&format=json&env=http://datatables.org/alltables.env';
-
-  console.log(url)
 
   $http.get(url)
     .success(function(json){
