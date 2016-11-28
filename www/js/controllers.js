@@ -56,19 +56,23 @@ angular.module('newApp.controllers', [])
 
 .controller('StockCtrl', ['$scope',
 '$stateParams',
+'$ionicPopup',
 'stockDataService',
 'dateService',
 '$window',
 'chartDataService',
-function($scope, $stateParams, stockDataService, dateService, $window, chartDataService) {
+'notesService',
+function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $window, chartDataService, notesService) {
 
   $scope.chartView = 4;
   $scope.ticker = $stateParams.stockTicker;
+  $scope.stockNotes = [];
   /*Use lifecycle methods to invoke the function defined for services*/
   $scope.$on("$ionicView.afterEnter", function(){
     getPriceData();
     getDetailsData();
     getChartData();
+    $scope.stockNotes = notesService.getNotes($scope.ticker);
   });
 
   $scope.oneYearAgoDate = dateService.oneYearAgoDate();
@@ -77,6 +81,77 @@ function($scope, $stateParams, stockDataService, dateService, $window, chartData
   $scope.chartViewFn = function(n){
     $scope.chartView = n;
   }
+
+  $scope.addNote = function() {
+      $scope.note = {title: 'Note', body: '', date: $scope.todayDate, ticker: $scope.ticker};
+
+      var note = $ionicPopup.show({
+        template: '<input type="text" ng-model="note.title" id="stock-note-title"><textarea type="text" ng-model="note.body" id="stock-note-body"></textarea>',
+        title: 'New Note for ' + $scope.ticker,
+        scope: $scope,
+        buttons: [
+          {
+            text: 'Cancel',
+            onTap: function(e) {
+              return;
+            }
+           },
+          {
+            text: '<b>Save</b>',
+            type: 'button-balanced',
+            onTap: function(e) {
+              notesService.addNote($scope.ticker, $scope.note);
+            }
+          }
+        ]
+      });
+  note.then(function(res) {
+    $scope.stockNotes = notesService.getNotes($scope.ticker);
+  });
+};
+
+
+$scope.openNote = function(index, title, body) {
+      $scope.note = {title: title, body: body, date: $scope.todayDate, ticker: $scope.ticker};
+
+      var note = $ionicPopup.show({
+        template: '<input type="text" ng-model="note.title" id="stock-note-title"><textarea type="text" ng-model="note.body" id="stock-note-body"></textarea>',
+        title: $scope.note.title,
+        scope: $scope,
+        buttons: [
+          {
+            text: 'Delete',
+            type: 'button-assertive button-small',
+            onTap: function(e) {
+              notesService.deleteNote($scope.ticker, index);
+            }
+          },
+          {
+            text: 'Cancel',
+            type: 'button-small',
+            onTap: function(e) {
+              return;
+            }
+           },
+          {
+            text: '<b>Save</b>',
+            type: 'button-balanced button-small',
+            onTap: function(e) {
+              notesService.deleteNote($scope.ticker, index);
+              notesService.addNote($scope.ticker, $scope.note);
+            }
+          }
+        ]
+      });
+
+      note.then(function(res) {
+        $scope.stockNotes = notesService.getNotes($scope.ticker);
+      });
+    };
+
+
+
+
   /*This is a function invoked callback from services for ticker pricing*/
   function getPriceData(){
     var promise = stockDataService.getPriceData($scope.ticker);
