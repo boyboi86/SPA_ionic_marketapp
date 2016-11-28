@@ -62,7 +62,8 @@ angular.module('newApp.controllers', [])
 '$window',
 'chartDataService',
 'notesService',
-function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $window, chartDataService, notesService) {
+'newsService',
+function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $window, chartDataService, notesService, newsService) {
 
   $scope.chartView = 4;
   $scope.ticker = $stateParams.stockTicker;
@@ -72,6 +73,7 @@ function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $wind
     getPriceData();
     getDetailsData();
     getChartData();
+    getNews();
     $scope.stockNotes = notesService.getNotes($scope.ticker);
   });
 
@@ -81,6 +83,16 @@ function($scope, $stateParams, $ionicPopup, stockDataService, dateService, $wind
   $scope.chartViewFn = function(n){
     $scope.chartView = n;
   }
+
+  $scope.openWindow = function(link) {
+    // var inAppBrowserOptions = {
+    //   location: 'yes',
+    //   clearcache: 'yes',
+    //   toolbar: 'yes'
+    // };
+    //
+    // $cordovaInAppBrowser.open(link, '_blank', inAppBrowserOptions);
+  };
 
   $scope.addNote = function() {
       $scope.note = {title: 'Note', body: '', date: $scope.todayDate, ticker: $scope.ticker};
@@ -188,9 +200,19 @@ $scope.openNote = function(index, title, body) {
         });
       return series;
     });
-});
+  });
+}
 
-  }
+function getNews() {
+
+      $scope.newsStories = [];
+
+      var promise = newsService.getNews($scope.ticker);
+
+      promise.then(function(data) {
+        $scope.newsStories = data;
+      });
+    }
 
 
 	var xTickFormat = function(d) {
