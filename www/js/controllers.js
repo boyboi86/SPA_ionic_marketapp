@@ -40,6 +40,7 @@ angular.module('newApp.controllers', [])
 .controller('MyStocksCtrl', ['$scope',
 'myStocksArrayService',
 function($scope, myStocksArrayService) {
+
   $scope.myStocksArray = myStocksArrayService;
 }])
 
